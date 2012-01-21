@@ -33,6 +33,10 @@ class PageTest extends PHPUnit_Framework_TestCase
         $tags = $page->getTags();
         $this->assertInternalType('array', $tags);
         
+        $content = $page->getContent();
+        $this->assertInternalType('string', $content);
+        $this->assertGreaterThan(0, strlen($content));
+        
         $this->assertEquals(7, count($tags));
         //Dependency Injection,DiC,php,zend,Zend\Di,Zend_Di,zf2
         $this->assertEquals('Dependency Injection', $tags[0]);
@@ -53,6 +57,17 @@ class PageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Tests', $categories[2]);
     }
     
+    public function testContent()
+    {
+        $page = new Walk\Site\Page(
+        	"http://test.local", 
+        	"This is only and example...<!-- UPCLOO_POST_CONTENT -->This is my content<!-- UPCLOO_POST_CONTENT -->And this is the tail"
+        );
+        
+        $content = $page->parse()->getContent();
+        $this->assertEquals('This is my content', $content);
+    }
+    
     public function testXmlOutput()
     {
         $html = file_get_contents(__DIR__ . '/stuffs/single-content.html');
@@ -60,7 +75,7 @@ class PageTest extends PHPUnit_Framework_TestCase
         $page = new Walk\Site\Page("http://test.local", $html);
         $page->setSiteKey("ts90TEsts");
         $page->parse();
-        
+
         $this->markTestIncomplete(
           'This test has not been implemented yet.'
         );

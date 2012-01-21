@@ -15,11 +15,16 @@ class Page
     private $_categories;
     private $_type;
     
+    private $_summary;
+    private $_content;
+    
     private $_page;
     private $_language;
     
     private $_sitekey;
     private $_url;
+    
+    private $_image;
     
     const ID = 'UPCLOO_POST_ID';
     const TITLE = 'UPCLOO_POST_TITLE';
@@ -28,9 +33,12 @@ class Page
     const TAGS = 'UPCLOO_POST_TAGS';
     const CATEGORIES = 'UPCLOO_POST_CATEGORIES';
     const TYPE = 'UPCLOO_POST_TYPE';
+    const IMAGE = 'UPCLOO_POST_IMAGE';
+    const CONTENT = 'UPCLOO_POST_CONTENT';
     
     const COMMENT_START = '<!-- %s';
     const COMMENT_STOP = '%s -->';
+    const COMMENT_FULL = '<!-- %s -->';
     
     /**
      * 
@@ -62,10 +70,34 @@ class Page
         $tags = $this->_parse(self::TAGS);
         $categories = $this->_parse(self::CATEGORIES);
         
+        $this->_content = $this->_parseBetween(self::CONTENT);
+        
         $this->_tags = array_map('trim', explode(",", $tags));
         $this->_categories = array_map('trim', explode(",", $categories));
         
         return $this;
+    }
+    
+    protected function _parseBetween($commentText)
+    {
+        $tag = sprintf(self::COMMENT_FULL, $commentText);
+        
+        $pos = strpos($this->_html, $tag);
+        
+        if ($pos !== false) {
+            $init = $pos + strlen($tag);
+            $tmp = substr($this->_html, $init);
+            
+            $end = strpos($tmp, $tag);
+            
+            if ($end !== false) {
+                return substr($tmp, 0, $end);
+            } else {
+                return false;
+            }
+        }
+        
+        return false;
     }
     
     protected function _parse($commentText)
@@ -114,6 +146,11 @@ class Page
         return $this->_categories;
     }
     
+    public function getImage()
+    {
+        return $this->_image;
+    }
+    
     public function getSiteKey()
     {
         if (!$this->_sitekey) {
@@ -144,6 +181,21 @@ class Page
         return $this->_type;
     }
     
+    public function getContent()
+    {
+        return $this->_content;
+    }
+    
+    public function getSummary()
+    {
+        $content = $this->getContent();
+        //TODO: create summary on content
+        
+        $this->_summary = '';
+        
+        return $this->_summary;
+    }
+    
     public function asXml()
     {
         $doc = new \DOMDocument("1.0", "utf-8");
@@ -156,6 +208,7 @@ class Page
         
         $publishDateNode = $doc->createElement("publish_date", $this->getPublishDate());
         $typeNode = $doc->createElement("type", $this->getType());
+        $imageNode = $doc->createElement("image", $this->getImage());
         
         $root->appendChild($idNode);
         $root->appendChild($sitekeyNode);
@@ -163,6 +216,8 @@ class Page
         
         $root->appendChild($publishDateNode);
         $root->appendChild($typeNode);
+        
+        $root->appendChild($imageNode);
         
         $doc->appendChild($root);
         $doc->formatOutput = true;
