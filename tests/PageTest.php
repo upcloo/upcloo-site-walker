@@ -23,5 +23,8 @@ class PageTest extends PHPUnit_Framework_TestCase
         
         $title = $page->getTitle();
         $this->assertEquals('Zend\Di impressioni - ZF2', $title);
+        
+        $publishDate = $page->getPublishDate();
+        $this->assertEquals('2012-01-08T15:25:42Z', $publishDate);
     }
 }
