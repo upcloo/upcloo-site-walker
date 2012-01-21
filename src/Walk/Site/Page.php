@@ -165,6 +165,8 @@ class Page
         $root->appendChild($typeNode);
         
         $doc->appendChild($root);
+        $doc->formatOutput = true;
+        
         return $doc->saveXML($doc);
     }
 }

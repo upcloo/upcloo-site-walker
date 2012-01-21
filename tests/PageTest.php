@@ -6,7 +6,7 @@ class PageTest extends PHPUnit_Framework_TestCase
     {
         $html = file_get_contents(__DIR__ . '/stuffs/little.html');
         
-        $page = new Walk\Site\Page($html);
+        $page = new Walk\Site\Page("http://test.local", $html);
         $id = $page->parse()->getId();
         
         $this->assertEquals('post_1088', $id);
@@ -16,7 +16,7 @@ class PageTest extends PHPUnit_Framework_TestCase
     {
         $html = file_get_contents(__DIR__ . '/stuffs/single-content.html');
     
-        $page = new Walk\Site\Page($html);
+        $page = new Walk\Site\Page("http://test.local", $html);
 
         $id = $page->parse()->getId();
         $this->assertEquals('post_1088', $id);
@@ -57,7 +57,7 @@ class PageTest extends PHPUnit_Framework_TestCase
     {
         $html = file_get_contents(__DIR__ . '/stuffs/single-content.html');
         
-        $page = new Walk\Site\Page($html);
+        $page = new Walk\Site\Page("http://test.local", $html);
         $page->setSiteKey("ts90TEsts");
         $page->parse();
         
