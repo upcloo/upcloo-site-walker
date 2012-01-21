@@ -1,0 +1,6 @@
+[submodule "vendor/zf2"]
+	path = vendor/zf2
+	url = git://github.com/zendframework/zf2.git
+[submodule "vendor/php-color-console"]
+	path = vendor/php-color-console
+	url = git://github.com/wdalmut/php-color-console.git
