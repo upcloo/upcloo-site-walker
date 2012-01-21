@@ -197,31 +197,35 @@ class Page
     }
     
     public function asXml()
-    {
+    {        
         $doc = new \DOMDocument("1.0", "utf-8");
         
         $root = $doc->createElement("model");
         
-        $idNode = $doc->createElement("id", $this->getId());
-        $sitekeyNode = $doc->createElement("sitekey", $this->getSitekey());
-        $titleNode = $doc->createElement("title", $this->getTitle());
-        
-        $publishDateNode = $doc->createElement("publish_date", $this->getPublishDate());
-        $typeNode = $doc->createElement("type", $this->getType());
-        $imageNode = $doc->createElement("image", $this->getImage());
-        
-        $root->appendChild($idNode);
-        $root->appendChild($sitekeyNode);
-        $root->appendChild($titleNode);
-        
-        $root->appendChild($publishDateNode);
-        $root->appendChild($typeNode);
-        
-        $root->appendChild($imageNode);
-        
+        $this->_addElement($doc, $root, "id");        
+        $this->_addElement($doc, $root, "sitekey");
+        $this->_addElement($doc, $root, "title");
+        $this->_addElement($doc, $root, "publish_date");
+        $this->_addElement($doc, $root, "type");
+        $this->_addElement($doc, $root, "image");
+
         $doc->appendChild($root);
         $doc->formatOutput = true;
         
         return $doc->saveXML($doc);
+    }
+    
+    private function _addElement(\DomDocument $doc, \DomElement $root, $name)
+    {
+        $filter = new \Zend\Filter\FilterChain();
+        $filter->attach(new \Zend\Filter\Callback("ucfirst"));
+        $filter->attach(new \Zend\Filter\Word\UnderscoreToCamelCase());
+        
+        $method = "get{$filter->filter($name)}";
+        $value = $this->$method();
+        if ($value) {
+            $element = $doc->createElement($name, $value);
+            $root->appendChild($element);
+        }
     }
 }
