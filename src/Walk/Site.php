@@ -59,6 +59,10 @@ class Site
         self::$_instance->_createBase();
         
         \phly\PubSub::publish(CONSOLE_TOPIC, "Boot ends...");
+        
+        //Init walking
+        //Push the first link (seed) into the queue
+        $this->_queue->send($this->_site);
     }
     
     private function _createQueues()
