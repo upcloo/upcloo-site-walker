@@ -4,3 +4,6 @@
 [submodule "vendor/php-color-console"]
 	path = vendor/php-color-console
 	url = git://github.com/wdalmut/php-color-console.git
+[submodule "vendor/phly"]
+	path = vendor/phly
+	url = git://github.com/weierophinney/phly.git
