@@ -52,7 +52,7 @@ class Page
         $this->_url = $url;
     }
     
-    public function setSiteKey($sitekey)
+    public function setSitekey($sitekey)
     {
         $this->_sitekey = $sitekey;
     }
@@ -151,10 +151,10 @@ class Page
         return $this->_image;
     }
     
-    public function getSiteKey()
+    public function getSitekey()
     {
         if (!$this->_sitekey) {
-            throw new \Exception("You must provide the SiteKey!");
+            throw new \Exception("You must provide the sitekey!");
         }
         return $this->_sitekey;
     }
@@ -203,7 +203,7 @@ class Page
         $root = $doc->createElement("model");
         
         $idNode = $doc->createElement("id", $this->getId());
-        $sitekeyNode = $doc->createElement("sitekey", $this->getSiteKey());
+        $sitekeyNode = $doc->createElement("sitekey", $this->getSitekey());
         $titleNode = $doc->createElement("title", $this->getTitle());
         
         $publishDateNode = $doc->createElement("publish_date", $this->getPublishDate());

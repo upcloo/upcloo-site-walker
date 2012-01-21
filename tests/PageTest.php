@@ -73,7 +73,7 @@ class PageTest extends PHPUnit_Framework_TestCase
         $html = file_get_contents(__DIR__ . '/stuffs/single-content.html');
         
         $page = new Walk\Site\Page("http://test.local", $html);
-        $page->setSiteKey("ts90TEsts");
+        $page->setSitekey("ts90TEsts");
         $page->parse();
 
         $this->markTestIncomplete(

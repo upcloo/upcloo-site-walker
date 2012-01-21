@@ -50,7 +50,7 @@ class Crawler extends StrategyAbstract
                         
                         //TODO: analyze the page
                         $page = new \Walk\Site\Page($uri, $html);
-                        $page->setSiteKey($this->_sitekey);
+                        $page->setSitekey($this->_sitekey);
                         $xml = $page->parse()->asXml();
                         
                         $filename = $this->_outputDirectory . "/" . $page->getId() . ".xml";
