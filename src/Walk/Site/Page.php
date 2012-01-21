@@ -10,12 +10,18 @@ class Page
     private $_id;
     private $_title;
     private $_publishDate;
+    private $_author;
+    private $_tags;
+    private $_categories;
     
     private $_doc;
     
     const ID = 'UPCLOO_POST_ID';
     const TITLE = 'UPCLOO_POST_TITLE';
     const PUBLISH_DATE = 'UPCLOO_POST_PUBLISH_DATE';
+    const AUTHOR = 'UPCLOO_POST_AUTHOR';
+    const TAGS = 'UPCLOO_POST_TAGS';
+    const CATEGORIES = 'UPCLOO_POST_CATEGORIES';
     
     const COMMENT_START = '<!-- %s';
     const COMMENT_STOP = '%s -->';
@@ -38,6 +44,12 @@ class Page
         $this->_id = $this->_parse(self::ID);
         $this->_title = $this->_parse(self::TITLE);
         $this->_publishDate = $this->_parse(self::PUBLISH_DATE);
+        $this->_author = $this->_parse(self::AUTHOR);
+        $tags = $this->_parse(self::TAGS);
+        $categories = $this->_parse(self::CATEGORIES);
+        
+        $this->_tags = array_map('trim', explode(",", $tags));
+        $this->_categories = array_map('trim', explode(",", $categories));
         
         return $this;
     }
@@ -71,6 +83,21 @@ class Page
     public function getPublishDate()
     {
         return $this->_publishDate;
+    }
+    
+    public function getAuthor()
+    {
+        return $this->_author;
+    }
+    
+    public function getTags()
+    {
+        return $this->_tags;
+    }
+    
+    public function getCategories()
+    {
+        return $this->_categories;
     }
     
     public function asXml()
