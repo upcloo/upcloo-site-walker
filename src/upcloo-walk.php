@@ -28,6 +28,7 @@ set_include_path(
             __DIR__,
             realpath(__DIR__ . '/../vendor/zf2/library'),
             realpath(__DIR__ . '/../vendor/php-color-console/src'),
+            realpath(__DIR__ . '/../vendor/phly/Phly_PubSub/library'),
             get_include_path()
         )
     )
@@ -37,8 +38,18 @@ require_once 'Zend/Loader/StandardAutoloader.php';
 $loader = new \Zend\Loader\StandardAutoloader();
 $loader->registerNamespace("Zend", __DIR__ . '/../vendor/zf2/library/Zend');
 $loader->registerNamespace("Wally", __DIR__ . '/../vendor/php-color-console/src/Wally');
+$loader->registerNamespace("phly", __DIR__ . '/../vendor/phly/Phly_PubSub/library/phly');
 $loader->registerNamespace("Walk", __DIR__ . '/Walk');
 $loader->register();
+
+define('RED_CONSOLE_TOPIC', 'red_console_topic');
+define('GREEN_CONSOLE_TOPIC', 'green_console_topic');
+define('CONSOLE_TOPIC', 'console_topic');
+
+$writer = new Walk\Writer();
+\phly\PubSub::subscribe(RED_CONSOLE_TOPIC, $writer, 'printRedLine');
+\phly\PubSub::subscribe(GREEN_CONSOLE_TOPIC, $writer, 'printGreenLine');
+\phly\PubSub::subscribe(CONSOLE_TOPIC, $writer, 'printLine');
 
 $opts = array(
 	'site|domain|d|s=s'    => 'Set the site to walk [mandatory]',

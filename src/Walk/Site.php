@@ -14,7 +14,6 @@ class Site
     private $_console;
     
     private $_queue;
-    
     private $_links;
     
     /**
@@ -53,9 +52,13 @@ class Site
     
     public function walk()
     {
+        \phly\PubSub::publish(CONSOLE_TOPIC, "Boot the walker...");
+        
         //Init database connections
         self::$_instance->_createQueues();
         self::$_instance->_createBase();
+        
+        \phly\PubSub::publish(CONSOLE_TOPIC, "Boot ends...");
     }
     
     private function _createQueues()
@@ -68,6 +71,8 @@ class Site
         );
 
         $this->_queue = $queue;
+        
+        \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "In memory array queue started successfully");
     }
     
     private function _createBase()
@@ -88,5 +93,7 @@ class Site
         $db->query($spec);
         
         AbstractTable::setDefaultAdapter($db);
+        
+        \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "Links database started successfully");
     }
 }
