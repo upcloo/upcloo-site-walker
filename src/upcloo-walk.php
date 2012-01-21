@@ -77,7 +77,7 @@ try {
 //     }
    
     if (!$outputDirectory) {
-        $outputDirectory = __DIR__;
+        $outputDirectory = realpath(__DIR__ . "/../files");
     }
     
     echo "Start walking on " . $console->yellow($site) . " with sitekey " .$console->yellow($sitekey) .".". PHP_EOL;

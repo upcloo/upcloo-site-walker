@@ -63,7 +63,13 @@ class Site
         //Init walking
         //Push the first link (seed) into the queue
         $this->_queue->send($this->_site);
-        Crawler::start($this->_queue, $this->_links, $this->_site);
+        Crawler::start(
+            $this->_queue, 
+            $this->_links, 
+            $this->_site, 
+            $this->_sitekey, 
+            $this->_outputDirectory
+        );
     }
     
     private function _createQueues()

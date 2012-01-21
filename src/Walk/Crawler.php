@@ -16,19 +16,25 @@ class Crawler
     
     private $_userAgent = 'UpCloo-Spider-1.0';
     
+    private $_sitekey;
+    private $_outputDirectory;
+    
     public static function setValidHost($host)
     {
         
     }
     
-    public static function start(\Zend\Queue\Queue $queue, \Walk\Model\Link $links, $mainSeed)
+    public static function start(\Zend\Queue\Queue $queue, \Walk\Model\Link $links, $mainSeed, $sitekey, $outputDirectory)
     {
         $instance = new self();
         $instance->_queue = $queue;
         $instance->_links = $links;
+        $instance->_outputDirectory = $outputDirectory;
         
         $uri = new \Zend\Uri\Uri($mainSeed);
         $instance->_host = $uri->getHost();
+        
+        $instance->_sitekey = $sitekey;
         
         $instance->run();
     }
@@ -50,6 +56,15 @@ class Crawler
                         $page = $client->send();
                         
                         $html = $page->getBody();
+                        
+                        //TODO: analyze the page
+                        $page = new \Walk\Site\Page($uri, $html);
+                        $page->setSiteKey($this->_sitekey);
+                        $xml = $page->parse()->asXml();
+                        
+                        $filename = $this->_outputDirectory . "/" . $page->getId() . ".xml";
+                        file_put_contents($filename, $xml);
+                        
                         $dom = new \Zend\Dom\Query($html);
                         
                         //Get all links of this page...

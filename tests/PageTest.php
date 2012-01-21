@@ -52,4 +52,17 @@ class PageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('PHP', $categories[1]);
         $this->assertEquals('Tests', $categories[2]);
     }
+    
+    public function testXmlOutput()
+    {
+        $html = file_get_contents(__DIR__ . '/stuffs/single-content.html');
+        
+        $page = new Walk\Site\Page($html);
+        $page->setSiteKey("ts90TEsts");
+        $page->parse();
+        
+        $this->markTestIncomplete(
+          'This test has not been implemented yet.'
+        );
+    }
 }

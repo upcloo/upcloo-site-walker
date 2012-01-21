@@ -13,8 +13,13 @@ class Page
     private $_author;
     private $_tags;
     private $_categories;
+    private $_type;
     
-    private $_doc;
+    private $_page;
+    private $_language;
+    
+    private $_sitekey;
+    private $_url;
     
     const ID = 'UPCLOO_POST_ID';
     const TITLE = 'UPCLOO_POST_TITLE';
@@ -22,6 +27,7 @@ class Page
     const AUTHOR = 'UPCLOO_POST_AUTHOR';
     const TAGS = 'UPCLOO_POST_TAGS';
     const CATEGORIES = 'UPCLOO_POST_CATEGORIES';
+    const TYPE = 'UPCLOO_POST_TYPE';
     
     const COMMENT_START = '<!-- %s';
     const COMMENT_STOP = '%s -->';
@@ -29,11 +35,18 @@ class Page
     /**
      * 
      * Enter description here ...
+     * @param string $url
      * @param string $html
      */
-    public function __construct($html)
+    public function __construct($url, $html)
     {
         $this->_html = $html;
+        $this->_url = $url;
+    }
+    
+    public function setSiteKey($sitekey)
+    {
+        $this->_sitekey = $sitekey;
     }
     
     /**
@@ -45,6 +58,7 @@ class Page
         $this->_title = $this->_parse(self::TITLE);
         $this->_publishDate = $this->_parse(self::PUBLISH_DATE);
         $this->_author = $this->_parse(self::AUTHOR);
+        $this->_type = $this->_parse(self::TYPE);
         $tags = $this->_parse(self::TAGS);
         $categories = $this->_parse(self::CATEGORIES);
         
@@ -100,8 +114,57 @@ class Page
         return $this->_categories;
     }
     
+    public function getSiteKey()
+    {
+        if (!$this->_sitekey) {
+            throw new \Exception("You must provide the SiteKey!");
+        }
+        return $this->_sitekey;
+    }
+    
+    public function getLanguage()
+    {
+        if (!$this->_language) {
+            $this->_language = 'it';
+        }
+        
+        return $this->_language;
+    }
+    
+    public function getPage()
+    {
+        if (!$this->_page) {
+            $this->_page = 1;
+        }
+        return $this->_page;
+    }
+    
+    public function getType()
+    {
+        return $this->_type;
+    }
+    
     public function asXml()
     {
-        return $this->_doc;
+        $doc = new \DOMDocument("1.0", "utf-8");
+        
+        $root = $doc->createElement("model");
+        
+        $idNode = $doc->createElement("id", $this->getId());
+        $sitekeyNode = $doc->createElement("sitekey", $this->getSiteKey());
+        $titleNode = $doc->createElement("title", $this->getTitle());
+        
+        $publishDateNode = $doc->createElement("publish_date", $this->getPublishDate());
+        $typeNode = $doc->createElement("type", $this->getType());
+        
+        $root->appendChild($idNode);
+        $root->appendChild($sitekeyNode);
+        $root->appendChild($titleNode);
+        
+        $root->appendChild($publishDateNode);
+        $root->appendChild($typeNode);
+        
+        $doc->appendChild($root);
+        return $doc->saveXML($doc);
     }
 }
