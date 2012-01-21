@@ -7,11 +7,12 @@ class Link extends \Zend\Db\Table\AbstractTable
     
     public function exists($link)
     {
-        return $this->fetchRow(array('hash = ?', sha1($link)));
+        $select = $this->select()->where('hash = ?', sha1($link));
+        return $this->fetchRow($select);
     }
     
     public function insert($link) 
     {
-        $this->insert(array('link' => $link, 'hash' => sha1($link)));
+        parent::insert(array('link' => $link, 'hash' => sha1($link)));
     }
 }

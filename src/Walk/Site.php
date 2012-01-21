@@ -63,6 +63,7 @@ class Site
         //Init walking
         //Push the first link (seed) into the queue
         $this->_queue->send($this->_site);
+        Crawler::start($this->_queue, $this->_links, $this->_site);
     }
     
     private function _createQueues()
@@ -97,6 +98,7 @@ class Site
         $db->query($spec);
         
         AbstractTable::setDefaultAdapter($db);
+        $this->_links = new \Walk\Model\Link();
         
         \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "Links database started successfully");
     }
