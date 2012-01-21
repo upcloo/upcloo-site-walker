@@ -25,6 +25,7 @@ set_include_path(
     implode(
         PATH_SEPARATOR,
         array(
+            __DIR__,
             realpath(__DIR__ . '/../vendor/zf2/library'),
             realpath(__DIR__ . '/../vendor/php-color-console/src'),
             get_include_path()
@@ -36,12 +37,13 @@ require_once 'Zend/Loader/StandardAutoloader.php';
 $loader = new \Zend\Loader\StandardAutoloader();
 $loader->registerNamespace("Zend", __DIR__ . '/../vendor/zf2/library/Zend');
 $loader->registerNamespace("Wally", __DIR__ . '/../vendor/php-color-console/src/Wally');
+$loader->registerNamespace("Walk", __DIR__ . '/Walk');
 $loader->register();
 
 $opts = array(
 	'site|domain|d|s=s'    => 'Set the site to walk [mandatory]',
 	'sitekey|k=s' => 'Sitekey for the site [mandatory]',
-	'output|o=s' => 'Set the output directory [optional]'
+	'output|o=s' => 'Set the output directory [optional], if missing this folder will be set.'
 );
 
 $console = \Wally\Console\Console::getInstance();
@@ -50,17 +52,34 @@ try {
     $optsConsole = new \Zend\Console\Getopt($opts);
     $site = $optsConsole->getOption("s");
     $sitekey = $optsConsole->getOption("k");
+    $outputDirectory = $optsConsole->getOption("o");
     
     //Mandatory parameter
-    if (empty($site) || empty($sitekey)) {
+    if (!$site || !$sitekey) {
         throw new \Zend\Console\Exception\RuntimeException("ASG", $optsConsole->getUsageMessage());
     }
     
-    echo "Start walking on " . $console->green($site) . " with sitekey " .$console->green($sitekey) .".". PHP_EOL;
-
+//     $site = new \Zend\Uri\Uri($site);
+//     if (!$site->isValid()) {
+//         echo $console->red("[FATAL]") . " - Please use a valid url.";
+//         exit;
+//     }
+   
+    if (!$outputDirectory) {
+        $outputDirectory = __DIR__;
+    }
     
+    echo "Start walking on " . $console->yellow($site) . " with sitekey " .$console->yellow($sitekey) .".". PHP_EOL;
+    echo "Output folder: " . $console->yellow($outputDirectory) . PHP_EOL;
+    
+    $manager = \Walk\Site::getInstance();
+    $manager->setSite($site);
+    $manager->setSiteKey($sitekey);
+    $manager->setOutputDirectory($outputDirectory);
+    
+    $manager->walk();
 } catch (\Zend\Console\Exception $e) {
-    echo $console->red("Please pass arguments" . PHP_EOL);
+    echo $console->red("Please check your arguments" . PHP_EOL);
     echo $e->getUsageMessage();
     exit;
 }
