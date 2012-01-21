@@ -1,4 +1,4 @@
-# UpCloo Site Walker
+# UpCloo Site Walker - [![Build Status](https://secure.travis-ci.org/wdalmut/upcloo-site-walker.png)](http://travis-ci.org/wdalmut/upcloo-site-walker?branch=master)
 
 This software create the XML representation of a content page using UpCloo
 meta information.
@@ -6,6 +6,6 @@ meta information.
 ## How it works
 
 ```
-upcloo-walk --site walterdalmut.com --sitekey mysitekey 
+php upcloo-walk.php --site walterdalmut.com --sitekey mysitekey 
 ```
 

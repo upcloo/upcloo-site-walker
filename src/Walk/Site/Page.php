@@ -15,7 +15,7 @@ class Page
     
     const ID = 'UPCLOO_POST_ID';
     const TITLE = 'UPCLOO_POST_TITLE';
-    const PUBLISH_DATE = 'UPCLOO_PUBLISH_DATE';
+    const PUBLISH_DATE = 'UPCLOO_POST_PUBLISH_DATE';
     
     const COMMENT_START = '<!-- %s';
     const COMMENT_STOP = '%s -->';
