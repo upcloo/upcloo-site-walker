@@ -1,7 +1,7 @@
 <?php
-namespace Walk;
+namespace Walk\Strategy;
 
-class Crawler
+class Crawler extends StrategyAbstract
 {
     /**
      * @var \Zend\Queue\Queue
@@ -14,29 +14,20 @@ class Crawler
     
     private $_host;
     
-    private $_userAgent = 'UpCloo-Spider-1.0';
-    
-    private $_sitekey;
-    private $_outputDirectory;
-    
-    public static function setValidHost($host)
+    public function setQueue(\Zend\Queue\Queue $queue)
     {
-        
+        $this->_queue = $queue;
     }
     
-    public static function start(\Zend\Queue\Queue $queue, \Walk\Model\Link $links, $mainSeed, $sitekey, $outputDirectory)
+    public function setLinks(\Walk\Model\Link $links)
     {
-        $instance = new self();
-        $instance->_queue = $queue;
-        $instance->_links = $links;
-        $instance->_outputDirectory = $outputDirectory;
-        
+        $this->_links = $links;
+    }
+    
+    public function setMainSeed($mainSeed)
+    {
         $uri = new \Zend\Uri\Uri($mainSeed);
-        $instance->_host = $uri->getHost();
-        
-        $instance->_sitekey = $sitekey;
-        
-        $instance->run();
+        $this->_host = $uri->getHost();
     }
     
     public function run()
@@ -79,7 +70,7 @@ class Crawler
                                     $this->_queue->send($linkUrl);
                                 }
                             } else {
-                                \phly\PubSub::publish(CONSOLE_TOPIC, "Host not valid: {$linkUrl}");
+                                \phly\PubSub::publish(CONSOLE_TOPIC, "Host not valid: {$linkUrl} - main seed: {$this->_host}");
                             }
                         }
                     }

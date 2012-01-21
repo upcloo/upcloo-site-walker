@@ -1,6 +1,8 @@
 <?php 
 namespace Walk;
 
+use Walk\Strategy\Crawler;
+
 use \Zend\Db\Table\AbstractTable;
 
 class Site
@@ -63,13 +65,15 @@ class Site
         //Init walking
         //Push the first link (seed) into the queue
         $this->_queue->send($this->_site);
-        Crawler::start(
-            $this->_queue, 
-            $this->_links, 
-            $this->_site, 
-            $this->_sitekey, 
-            $this->_outputDirectory
-        );
+        
+        $crawler = new Crawler();
+        $crawler->setQueue($this->_queue);
+        $crawler->setLinks($this->_links);
+        $crawler->setSitekey($this->_sitekey);
+        $crawler->setMainSeed($this->_site);
+        $crawler->setOutputDirectory($this->_outputDirectory);
+        
+        $crawler->run();
     }
     
     private function _createQueues()

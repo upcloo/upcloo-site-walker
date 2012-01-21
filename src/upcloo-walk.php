@@ -69,15 +69,19 @@ try {
     if (!$site || !$sitekey) {
         throw new \Zend\Console\Exception\RuntimeException("ASG", $optsConsole->getUsageMessage());
     }
-    
-//     $site = new \Zend\Uri\Uri($site);
-//     if (!$site->isValid()) {
-//         echo $console->red("[FATAL]") . " - Please use a valid url.";
-//         exit;
-//     }
    
     if (!$outputDirectory) {
-        $outputDirectory = realpath(__DIR__ . "/../files");
+        $outputDirectory = __DIR__ . "/../files";
+    }
+    
+    if (!file_exists($outputDirectory)) {
+        echo "Directory {$outputDirectory} not exits, I create it..." . PHP_EOL;
+        if (!mkdir($outputDirectory)) {
+            echo $console->red("Unable to create the output directory on path: {$outputDirectory}") . PHP_EOL;
+            exit;
+        }
+    } else {
+        echo $console->yellow("WARNING, the output folder already exists may be not clean...") . PHP_EOL;
     }
     
     echo "Start walking on " . $console->yellow($site) . " with sitekey " .$console->yellow($sitekey) .".". PHP_EOL;
@@ -88,6 +92,8 @@ try {
     $manager->setSiteKey($sitekey);
     $manager->setOutputDirectory($outputDirectory);
     
+    echo "Sleep for five seconds before start..." . PHP_EOL;
+    sleep(5);
     $manager->walk();
 } catch (\Zend\Console\Exception $e) {
     echo $console->red("Please check your arguments" . PHP_EOL);
