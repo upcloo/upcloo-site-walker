@@ -186,6 +186,11 @@ class Page
         return $this->_content;
     }
     
+    public function getUrl()
+    {
+        return $this->_url;
+    }
+    
     public function getSummary()
     {
         $content = $this->getContent();
@@ -205,8 +210,14 @@ class Page
         $this->_addElement($doc, $root, "id");        
         $this->_addElement($doc, $root, "sitekey");
         $this->_addElement($doc, $root, "title");
+        $this->_addElement($doc, $root, "content");
+        $this->_addElement($doc, $root, "summary");
+        $this->_addElement($doc, $root, "url");
         $this->_addElement($doc, $root, "publish_date");
         $this->_addElement($doc, $root, "type");
+        $this->_addElement($doc, $root, "author");
+        $this->_addElement($doc, $root, "tags");
+        $this->_addElement($doc, $root, "categories");
         $this->_addElement($doc, $root, "image");
 
         $doc->appendChild($root);
@@ -224,7 +235,15 @@ class Page
         $method = "get{$filter->filter($name)}";
         $value = $this->$method();
         if ($value) {
-            $element = $doc->createElement($name, $value);
+            if (is_array($value)) {
+                $typeName = $doc->createElement($name);
+                foreach ($value as $v) {
+                    $element = $doc->createElement("element", $v);
+                    $typeName->appendChild($element);
+                }
+            } else {
+                $element = $doc->createElement($name, $value);
+            }
             $root->appendChild($element);
         }
     }
