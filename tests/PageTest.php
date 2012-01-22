@@ -76,8 +76,24 @@ class PageTest extends PHPUnit_Framework_TestCase
         $page->setSitekey("ts90TEsts");
         $page->parse();
         
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $xml = $page->asXml();
+        
+        $parsed = simplexml_load_string($xml);
+        
+        $this->assertEquals('Zend\Di impressioni - ZF2', (string)$parsed->title);
+        $this->assertEquals("ts90TEsts", (string)$parsed->sitekey);
+        $this->assertEquals('post_1088', (string)$parsed->id);
+        $this->assertEquals('http://test.local', (string)$parsed->url);
+        $this->assertEquals('2012-01-08T15:25:42Z', (string)$parsed->publish_date);
+        $this->assertEquals('post', (string)$parsed->type);
+        $this->assertEquals('Walter Dal Mut', (string)$parsed->author);
+        $this->assertEquals(7, count($parsed->tags->element));
+        $this->assertEquals(3, count($parsed->categories->element));
+        
+        $this->assertTrue(!$parsed->image);
+        
+//         $this->markTestIncomplete(
+//           'This test has not been implemented yet.'
+//         );
     }
 }
