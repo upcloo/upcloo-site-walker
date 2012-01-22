@@ -254,11 +254,13 @@ class Page
             if (is_array($value)) {
                 $element = $doc->createElement($name);
                 foreach ($value as $v) {
-                    $e = $doc->createElement("element", $v);
+                    $e = $doc->createElement("element");
+                    $e->appendChild($doc->createCDATASection($v));
                     $element->appendChild($e);
                 }
             } else {
-                $element = $doc->createElement($name, $value);
+                $element = $doc->createElement($name);
+                $element->appendChild($doc->createCDATASection($value));
             }
             $root->appendChild($element);
         }
