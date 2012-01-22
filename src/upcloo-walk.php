@@ -81,7 +81,7 @@ try {
             exit;
         }
     } else {
-        echo $console->yellow("WARNING, the output folder already exists may be not clean...") . PHP_EOL;
+        echo $console->red("WARNING, the output folder already exists may be not clean...") . PHP_EOL;
     }
     
     echo "Start walking on " . $console->yellow($site) . " with sitekey " .$console->yellow($sitekey) .".". PHP_EOL;

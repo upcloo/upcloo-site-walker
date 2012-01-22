@@ -36,25 +36,26 @@ class Crawler extends StrategyAbstract
             $messages = $this->_queue->receive();
             foreach ($messages as $message) {
                 try {
-                    \phly\PubSub::publish(CONSOLE_TOPIC, "Get page '{$message->body}' from queue");
                     $uri = $message->body;
                     
                     if (!$this->_links->exists($uri)) {
+                        \phly\PubSub::publish(CONSOLE_TOPIC, "Working on: {$uri}");
                         $this->_links->insert($uri);
-                        \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "Link analyzed: {$uri}");
                         $client = new \Zend\Http\Client($uri);
                         $client->setConfig(array('useragent'=> $this->_userAgent));
                         $page = $client->send();
                         
                         $html = $page->getBody();
                         
-                        //TODO: analyze the page
                         $page = new \Walk\Site\Page($uri, $html);
                         $page->setSitekey($this->_sitekey);
-                        $xml = $page->parse()->asXml();
                         
-                        $filename = $this->_outputDirectory . "/" . $page->getId() . ".xml";
-                        file_put_contents($filename, $xml);
+                        if ($page->parse()->getId()) {
+                            \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()}");
+                            $xml = $page->parse()->asXml();
+                            $filename = $this->_outputDirectory . "/" . $page->getId() . ".xml";
+                            file_put_contents($filename, $xml);
+                        }
                         
                         $dom = new \Zend\Dom\Query($html);
                         
@@ -69,9 +70,7 @@ class Crawler extends StrategyAbstract
                                 if (!$this->_links->exists($linkUrl)) {
                                     $this->_queue->send($linkUrl);
                                 }
-                            } else {
-                                \phly\PubSub::publish(CONSOLE_TOPIC, "Host not valid: {$linkUrl} - main seed: {$this->_host}");
-                            }
+                            } 
                         }
                     }
                 } catch (\Exception $e) {
