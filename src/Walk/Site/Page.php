@@ -236,10 +236,10 @@ class Page
         $value = $this->$method();
         if ($value) {
             if (is_array($value)) {
-                $typeName = $doc->createElement($name);
+                $element = $doc->createElement($name);
                 foreach ($value as $v) {
-                    $element = $doc->createElement("element", $v);
-                    $typeName->appendChild($element);
+                    $e = $doc->createElement("element", $v);
+                    $element->appendChild($e);
                 }
             } else {
                 $element = $doc->createElement($name, $value);
