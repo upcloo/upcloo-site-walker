@@ -53,8 +53,9 @@ $writer = new Walk\Writer();
 
 $opts = array(
 	'site|domain|d|s=s'    => 'Set the site to walk [mandatory]',
-	'sitekey|k=s' => 'Sitekey for the site [mandatory]',
-	'output|o=s' => 'Set the output directory [optional], if missing this folder will be set.'
+	'sitekey|k=s'          => 'Sitekey for the site [mandatory]',
+	'output|o=s'           => 'Set the output directory [optional], if missing this folder will be set.',
+	'sitemap|m'	           => 'Use sitemap strategy during your walk...'
 );
 
 $console = \Wally\Console\Console::getInstance();
@@ -91,6 +92,12 @@ try {
     $manager->setSite($site);
     $manager->setSiteKey($sitekey);
     $manager->setOutputDirectory($outputDirectory);
+    
+    if ($optsConsole->getOption("m")) {
+        $manager->setWalkMethod(new \Walk\Strategy\Sitemap());
+    } else {
+        $manager->setWalkMethod(new \Walk\Strategy\Crawler());
+    }
     
     echo "Sleep for five seconds before start..." . PHP_EOL;
     sleep(5);

@@ -18,6 +18,8 @@ class Site
     private $_queue;
     private $_links;
     
+    private $_walkMethod;
+    
     /**
      * @return \Walk\Site
      */
@@ -62,18 +64,23 @@ class Site
         
         \phly\PubSub::publish(CONSOLE_TOPIC, "Boot ends...");
         
-        //Init walking
-        //Push the first link (seed) into the queue
-        $this->_queue->send($this->_site);
+        //Start
+        $this->_walkMethod->setLinks($this->_links);
+        $this->_walkMethod->setSitekey($this->_sitekey);
+        $this->_walkMethod->setOutputDirectory($this->_outputDirectory);
+        $this->_walkMethod->setMainSeed($this->_site);
         
-        $crawler = new Crawler();
-        $crawler->setQueue($this->_queue);
-        $crawler->setLinks($this->_links);
-        $crawler->setSitekey($this->_sitekey);
-        $crawler->setMainSeed($this->_site);
-        $crawler->setOutputDirectory($this->_outputDirectory);
+        if ($this->_walkMethod instanceof \Walk\Strategy\Crawler) {
+            $this->_queue->send($this->_site);
+            $this->_walkMethod->setQueue($this->_queue);
+        }
         
-        $crawler->run();
+        $this->_walkMethod->run();
+    }
+    
+    public function setWalkMethod(\Walk\Strategy\StrategyAbstract $method)
+    {
+        $this->_walkMethod = $method;
     }
     
     private function _createQueues()

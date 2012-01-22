@@ -7,27 +7,10 @@ class Crawler extends StrategyAbstract
      * @var \Zend\Queue\Queue
      */
     private $_queue;
-    /**
-     * @var \Walk\Model\Link
-     */
-    private $_links;
-    
-    private $_host;
     
     public function setQueue(\Zend\Queue\Queue $queue)
     {
         $this->_queue = $queue;
-    }
-    
-    public function setLinks(\Walk\Model\Link $links)
-    {
-        $this->_links = $links;
-    }
-    
-    public function setMainSeed($mainSeed)
-    {
-        $uri = new \Zend\Uri\Uri($mainSeed);
-        $this->_host = $uri->getHost();
     }
     
     public function run()
