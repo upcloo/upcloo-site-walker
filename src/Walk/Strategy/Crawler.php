@@ -51,10 +51,15 @@ class Crawler extends StrategyAbstract
                         $page->setSitekey($this->_sitekey);
                         
                         if ($page->parse()->getId()) {
-                            \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()}");
-                            $xml = $page->parse()->asXml();
                             $filename = $this->_outputDirectory . "/" . $page->getId() . ".xml";
-                            file_put_contents($filename, $xml);
+                            
+                            if (!file_exists($filename)) {
+                                $xml = $page->asXml();
+                                file_put_contents($filename, $xml);
+                                \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()}");
+                            } else {
+                                \phly\PubSub::publish(RED_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()} already written on file... I skip it...");
+                            }
                         }
                         
                         $dom = new \Zend\Dom\Query($html);
