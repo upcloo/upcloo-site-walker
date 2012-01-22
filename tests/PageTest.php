@@ -66,6 +66,7 @@ class PageTest extends PHPUnit_Framework_TestCase
         
         $content = $page->parse()->getContent();
         $this->assertEquals('This is my content', $content);
+        $this->assertEquals('This is my content', $page->getSummary());
     }
     
     public function testXmlOutput()
@@ -87,6 +88,8 @@ class PageTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('2012-01-08T15:25:42Z', (string)$parsed->publish_date);
         $this->assertEquals('post', (string)$parsed->type);
         $this->assertEquals('Walter Dal Mut', (string)$parsed->author);
+        $this->assertGreaterThan(0, strlen((string)$parsed->content));
+        $this->assertGreaterThan(0, strlen((string)$parsed->summary));
         $this->assertEquals(7, count($parsed->tags->element));
         $this->assertEquals(3, count($parsed->categories->element));
         
@@ -95,5 +98,32 @@ class PageTest extends PHPUnit_Framework_TestCase
 //         $this->markTestIncomplete(
 //           'This test has not been implemented yet.'
 //         );
+    }
+    
+    public function testSummaryGeneration()
+    {
+        $page = new Walk\Site\Page(
+        	"http://test.local",
+        	'A little start '.
+        	'<!-- UPCLOO_POST_CONTENT -->' .
+			'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' .
+			' Praesent odio purus, ornare id iaculis id, lacinia a ipsum.' .
+			' Aliquam nec dapibus est. Cras egestas viverra eros, ac consectetur'.
+			' magna imperdiet nec. Nam in tellus at arcu lacinia sagittis semper'.
+			' vitae lorem. Aenean ac nunc a magna pretium aliquam. Duis mattis' .
+			' commodo fringilla. In hac habitasse platea dictumst. Ut nec sapien libero.' .
+			' Mauris nec nisl ante, eu volutpat quam. Quisque vel neque lectus.'.
+			' Integer ac neque leo.' .
+        	'<!-- UPCLOO_POST_CONTENT -->Adding a little tail'
+        );
+        $page->setSitekey("ts90TEsts");
+        $page->parse();
+        
+        $this->assertEquals(
+        	'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' .
+        	' Praesent odio purus, ornare id iaculis id, lacinia a ipsum.' .
+        	' Aliquam nec dapibus est.',
+        	$page->getSummary()
+        );
     }
 }

@@ -26,6 +26,8 @@ class Page
     
     private $_image;
     
+    private $_minLenSummary = 120;
+    
     const ID = 'UPCLOO_POST_ID';
     const TITLE = 'UPCLOO_POST_TITLE';
     const PUBLISH_DATE = 'UPCLOO_POST_PUBLISH_DATE';
@@ -196,7 +198,21 @@ class Page
         $content = $this->getContent();
         //TODO: create summary on content
         
-        $this->_summary = '';
+        $summary = $content;
+        
+        if (strlen($summary) > $this->_minLenSummary) {
+            $pos = strpos($summary, ".", $this->_minLenSummary);
+            
+            if ($pos !== false) {
+                $summary = substr($summary, 0, $pos+1);
+            }
+
+            if (strlen($summary) == strlen($content))            
+            if (strlen($summary) > 2*$this->_minLenSummary) {
+                $summary = substr($summary, 0, 2*$this->_minLenSummary);
+            }
+        }
+        $this->_summary = $summary;
         
         return $this->_summary;
     }
