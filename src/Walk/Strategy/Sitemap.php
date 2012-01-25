@@ -15,6 +15,14 @@ class Sitemap extends StrategyAbstract
         $doc = new \DOMDocument();
         $doc->loadXML($response->getBody());
         
-        var_dump($doc->schemaValidate(self::SCHEMA));
+        if ($doc->schemaValidate(self::SCHEMA)) {
+            //is a valid sitemap
+            $locations = $doc->getElementsByTagName("loc");
+            foreach ($locations as $location) {
+                $url = $location->nodeValue;
+
+                $this->_workOn($url);
+            }
+        }
     }
 }

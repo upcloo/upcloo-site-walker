@@ -24,26 +24,8 @@ class Crawler extends StrategyAbstract
                     if (!$this->_links->exists($uri)) {
                         \phly\PubSub::publish(CONSOLE_TOPIC, "Working on: {$uri}");
                         $this->_links->insert($uri);
-                        $client = new \Zend\Http\Client($uri);
-                        $client->setConfig(array('useragent'=> $this->_userAgent));
-                        $page = $client->send();
                         
-                        $html = $page->getBody();
-                        
-                        $page = new \Walk\Site\Page($uri, $html);
-                        $page->setSitekey($this->_sitekey);
-                        
-                        if ($page->parse()->getId()) {
-                            $filename = $this->_outputDirectory . "/" . $page->getId() . ".xml";
-                            
-                            if (!file_exists($filename)) {
-                                $xml = $page->asXml();
-                                file_put_contents($filename, $xml);
-                                \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()}");
-                            } else {
-                                \phly\PubSub::publish(RED_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()} already written on file... I skip it...");
-                            }
-                        }
+                        $html = $this->_workOn($uri);
                         
                         $dom = new \Zend\Dom\Query($html);
                         
