@@ -11,7 +11,7 @@ class Link extends \Zend\Db\Table\AbstractTable
         return $this->fetchRow($select);
     }
     
-    public function insert($link) 
+    public function insert(array $data) 
     {
         parent::insert(array('link' => $link, 'hash' => sha1($link)));
     }
