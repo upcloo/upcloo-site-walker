@@ -21,7 +21,7 @@ abstract class StrategyAbstract
     * Get the URI and genrate the response...
     *
     * @param string $uri
-    * @return string
+    * @return string The HTML page
     */
     protected function _workOn($uri)
     {

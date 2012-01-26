@@ -5,17 +5,16 @@ namespace Walk\Strategy;
 class Sitemap extends StrategyAbstract
 {
     const SCHEMA = 'http://www.sitemaps.org/schemas/sitemap/sitemap.xsd';
+    const SCHEMA_SITEMAP_INDEX = 'http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd';
     
     public function run()
     {
-        $client = new \Zend\Http\Client($this->_url);
-        
-        $response = $client->send();
+        $xml = $this->_getSitemap($this->_url);
         
         $doc = new \DOMDocument();
-        $doc->loadXML($response->getBody());
+        $doc->loadXML($xml);
         
-        if ($doc->schemaValidate(self::SCHEMA)) {
+        if (@$doc->schemaValidate(self::SCHEMA)) {
             //is a valid sitemap
             $locations = $doc->getElementsByTagName("loc");
             foreach ($locations as $location) {
@@ -23,6 +22,17 @@ class Sitemap extends StrategyAbstract
 
                 $this->_workOn($url);
             }
+        } else {
+            throw new \Walk\Strategy\SitemapException("Not a valid Sitemap at {$this->_url}");
         }
+    }
+    
+    protected function _getSitemap($url)
+    {
+        $client = new \Zend\Http\Client($url);
+        $response = $client->send();
+        $xml = $response->getBody();
+        
+        return $xml;
     }
 }
