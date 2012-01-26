@@ -6,6 +6,14 @@ meta information.
 ## How it works
 
 ```
-php upcloo-walk.php --site walterdalmut.com --sitekey mysitekey 
+php upcloo-walk.php --site http://walterdalmut.com --sitekey mysitekey 
+```
+
+Actually two walkers are provided, a spider crawler and the sitemap crawler.
+
+By default the spider will be used but you can set the sitemap crawler using the ```--sitemap``` option.
+
+```
+php upcloo-walk.php --site http://walterdalmut.com/your-site-map.xml --sitemap --sitekey my-site-key
 ```
 
