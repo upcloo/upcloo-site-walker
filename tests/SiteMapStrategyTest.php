@@ -18,7 +18,7 @@ class SiteMapStrategyTest
             );
         
         $stub->expects($this->any())
-            ->method('_getSitemap')
+            ->method('_workOn')
             ->will(
                 $this->returnValue(
                     file_get_contents(__DIR__ . '/stuffs/not-valid-page.html')
@@ -48,7 +48,7 @@ class SiteMapStrategyTest
             );
         
         $stub->expects($this->any())
-            ->method('_getSitemap')
+            ->method('_workOn')
             ->will(
                 $this->returnValue(
                     file_get_contents(__DIR__ . '/stuffs/not-valid-page.html')

@@ -4,8 +4,8 @@ namespace Walk\Strategy;
 
 class Sitemap extends StrategyAbstract
 {
-    const SCHEMA = 'http://www.sitemaps.org/schemas/sitemap/sitemap.xsd';
-    const SCHEMA_SITEMAP_INDEX = 'http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd';
+    const SCHEMA_SITEMAP = 'http://www.sitemaps.org/schemas/sitemap/sitemap.xsd';
+    const SCHEMA_SITEMAP_INDEX = 'http://www.sitemaps.org/schemas/sitemap/siteindex.xsd';
     
     public function run()
     {
@@ -14,7 +14,7 @@ class Sitemap extends StrategyAbstract
         $doc = new \DOMDocument();
         $doc->loadXML($xml);
         
-        if (@$doc->schemaValidate(self::SCHEMA)) {
+        if (@$doc->schemaValidate(self::SCHEMA_SITEMAP)) {
             //is a valid sitemap
             $locations = $doc->getElementsByTagName("loc");
             foreach ($locations as $location) {
