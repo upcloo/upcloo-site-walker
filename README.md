@@ -17,3 +17,19 @@ By default the spider will be used but you can set the sitemap crawler using the
 php upcloo-walk.php --site http://walterdalmut.com/your-site-map.xml --sitemap --sitekey my-site-key
 ```
 
+You can set the output folder using ```--output``` option.
+
+```
+php upcloo-walk.php --site http://walterdalmut.com --output /tmp/files/ --sitekey my-site-key
+```
+
+## Options
+Options that you can use
+
+```
+Usage: upcloo-walk.php [ options ]
+--site|--domain|-d|-s <string> Set the site to walk [mandatory]
+--sitekey|-k <string>          Sitekey for the site [mandatory]
+--output|-o <string>           Set the output directory [optional], if missing this folder will be set.
+--sitemap|-m                   Use sitemap strategy during your walk...
+```
