@@ -40,9 +40,9 @@ abstract class StrategyAbstract
             if (!file_exists($filename)) {
                 $xml = $page->asXml();
                 file_put_contents($filename, $xml);
-                \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()}");
+                \phly\PubSub::publish(\Walk\Setting::GREEN_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()}");
             } else {
-                \phly\PubSub::publish(RED_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()} already written on file... I skip it...");
+                \phly\PubSub::publish(\Walk\Setting::RED_CONSOLE_TOPIC, "[{$page->getId()}] {$page->getTitle()} already written on file... I skip it...");
             }
         }
     

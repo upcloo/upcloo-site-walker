@@ -13,6 +13,7 @@ class Sitemap extends StrategyAbstract
             $url = $this->_url;
         }
         
+        \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Working on: {$url}");
         $xml = $this->_getSitemap($url);
         
         $doc = new \DOMDocument();

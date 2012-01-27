@@ -21,3 +21,14 @@ $loader->registerNamespace("Wally", __DIR__ . '/../vendor/php-color-console/src/
 $loader->registerNamespace("phly", __DIR__ . '/../vendor/phly/Phly_PubSub/library/phly');
 $loader->registerNamespace("Walk", __DIR__ . '/../src/Walk');
 $loader->register();
+
+class WriterMock
+{
+    public function emptyStub() { }
+}
+$writer = new WriterMock();
+\phly\PubSub::subscribe(\Walk\Setting::RED_CONSOLE_TOPIC, $writer, 'emptyStub');
+\phly\PubSub::subscribe(\Walk\Setting::GREEN_CONSOLE_TOPIC, $writer, 'emptyStub');
+\phly\PubSub::subscribe(\Walk\Setting::CONSOLE_TOPIC, $writer, 'emptyStub');
+
+//Boot ends

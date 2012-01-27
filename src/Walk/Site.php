@@ -56,13 +56,13 @@ class Site
     
     public function walk()
     {
-        \phly\PubSub::publish(CONSOLE_TOPIC, "Boot the walker...");
+        \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Boot the walker...");
         
         //Init database connections
         self::$_instance->_createQueues();
         self::$_instance->_createBase();
         
-        \phly\PubSub::publish(CONSOLE_TOPIC, "Boot ends...");
+        \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Boot ends...");
         
         //Start
         $this->_walkMethod->setLinks($this->_links);
@@ -94,7 +94,7 @@ class Site
 
         $this->_queue = $queue;
         
-        \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "In memory array queue started successfully");
+        \phly\PubSub::publish(\Walk\Setting::GREEN_CONSOLE_TOPIC, "In memory array queue started successfully");
     }
     
     private function _createBase()
@@ -117,6 +117,6 @@ class Site
         AbstractTable::setDefaultAdapter($db);
         $this->_links = new \Walk\Model\Link();
         
-        \phly\PubSub::publish(GREEN_CONSOLE_TOPIC, "Links database started successfully");
+        \phly\PubSub::publish(\Walk\Setting::GREEN_CONSOLE_TOPIC, "Links database started successfully");
     }
 }

@@ -42,14 +42,12 @@ $loader->registerNamespace("phly", __DIR__ . '/../vendor/phly/Phly_PubSub/librar
 $loader->registerNamespace("Walk", __DIR__ . '/Walk');
 $loader->register();
 
-define('RED_CONSOLE_TOPIC', 'red_console_topic');
-define('GREEN_CONSOLE_TOPIC', 'green_console_topic');
-define('CONSOLE_TOPIC', 'console_topic');
+use Walk\Setting;
 
 $writer = new Walk\Writer();
-\phly\PubSub::subscribe(RED_CONSOLE_TOPIC, $writer, 'printRedLine');
-\phly\PubSub::subscribe(GREEN_CONSOLE_TOPIC, $writer, 'printGreenLine');
-\phly\PubSub::subscribe(CONSOLE_TOPIC, $writer, 'printLine');
+\phly\PubSub::subscribe(Setting::RED_CONSOLE_TOPIC, $writer, 'printRedLine');
+\phly\PubSub::subscribe(Setting::GREEN_CONSOLE_TOPIC, $writer, 'printGreenLine');
+\phly\PubSub::subscribe(Setting::CONSOLE_TOPIC, $writer, 'printLine');
 
 $opts = array(
 	'site|domain|d|s=s'    => 'Set the site to walk [mandatory]',

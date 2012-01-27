@@ -22,7 +22,7 @@ class Crawler extends StrategyAbstract
                     $uri = $message->body;
                     
                     if (!$this->_links->exists($uri)) {
-                        \phly\PubSub::publish(CONSOLE_TOPIC, "Working on: {$uri}");
+                        \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Working on: {$uri}");
                         $this->_links->insert($uri);
                         
                         $html = $this->_workOn($uri);
@@ -44,13 +44,13 @@ class Crawler extends StrategyAbstract
                         }
                     }
                 } catch (\Exception $e) {
-                    \phly\PubSub::publish(RED_CONSOLE_TOPIC, $e->getMessage());
+                    \phly\PubSub::publish(\Walk\Setting::RED_CONSOLE_TOPIC, $e->getMessage());
                 }
                 
                 $this->_queue->deleteMessage($message);
             }
         }
         
-        \phly\PubSub::publish(CONSOLE_TOPIC, "All pages captured... This is the end, my only friend, the end...");
+        \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "All pages captured... This is the end, my only friend, the end...");
     }
 }
