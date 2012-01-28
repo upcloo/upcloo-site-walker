@@ -6,6 +6,7 @@ branches:
   only:
     - master
 before_script:
+  - pyrus install phpunit/DbUnit
   - git submodule init
   - git submodule update
 script: phpunit --colors --bootstrap tests/bootstrap.php tests
