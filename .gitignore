@@ -1,5 +1,6 @@
 .project
 .buildpath
+.settings
 *.sqlite
 res
 files
