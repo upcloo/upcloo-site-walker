@@ -13,19 +13,26 @@ class Sitemap extends StrategyAbstract
             $url = $this->_url;
         }
         
-        \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Working on: {$url}");
-        $xml = $this->_getSitemap($url);
-        
-        $doc = new \DOMDocument();
-        $doc->loadXML($xml);
-        
-        if ($this->_isSitemap($doc)) {
-            $this->_fetchSitemap($doc);
-        } else if ($this->_isSitemapIndex($doc)) {
-            $this->_fetchSitemapIndex($doc);
+        if (!$this->_links->exists($url)) {
+            \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Working on: {$url}");
+            $xml = $this->_getSitemap($url);
+            
+            $doc = new \DOMDocument();
+            $doc->loadXML($xml);
+            
+            if ($this->_isSitemap($doc)) {
+                $this->_fetchSitemap($doc);
+            } else if ($this->_isSitemapIndex($doc)) {
+                $this->_fetchSitemapIndex($doc);
+            } else {
+                throw new \Walk\Strategy\SitemapException("Not a valid Sitemap at {$url}");
+            }
+            
+            $this->_links->store($url);
         } else {
-            throw new \Walk\Strategy\SitemapException("Not a valid Sitemap at {$url}");
+            \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Skip: {$url} [parsed previously]");
         }
+        
     }
     
     protected function _fetchSitemapIndex(\DOMDocument $document)

@@ -23,7 +23,7 @@ class Crawler extends StrategyAbstract
                     
                     if (!$this->_links->exists($uri)) {
                         \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Working on: {$uri}");
-                        $this->_links->insert($uri);
+                        $this->_links->store($uri);
                         
                         $html = $this->_workOn($uri);
                         

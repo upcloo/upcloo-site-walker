@@ -1,7 +1,35 @@
 <?php 
 class SiteMapStrategyTest
-    extends PHPUnit_Framework_TestCase
+    extends \Zend\Test\PHPUnit\DatabaseTestCase
 {
+    private $_connectionMock;
+    private $_links;
+    
+    protected function getConnection()
+    {
+        if($this->_connectionMock == null) {
+            $connection = \Zend\Db\Db::factory("Pdo\Sqlite", array('dbname'=>':memory:'));
+            $this->_connectionMock = $this->createZendDbConnection($connection, 'zfunittests');
+            \Zend\Db\Table\AbstractTable::setDefaultAdapter($connection);
+        }
+        
+        $this->_connectionMock->getConnection()->query(file_get_contents(__DIR__ . '/../src/walk.sql'));
+    
+        return $this->_connectionMock;
+    }
+    
+    protected function getDataSet()
+    {
+        return $this->createFlatXMLDataSet(__DIR__ . '/stuffs/links-seed.xml');
+    }
+    
+    public function setUp()
+    {
+        parent::setUp();
+    
+        $this->_links = new \Walk\Model\Link();
+    }
+    
     public function testBaseSiteMap()
     {
         $stub = $this->getMock(
@@ -25,6 +53,7 @@ class SiteMapStrategyTest
                 )
             );
         
+        $stub->setLinks($this->_links);
         $stub->setMainSeed("http://localhost");
         $stub->run();
     }
@@ -55,6 +84,7 @@ class SiteMapStrategyTest
                 )
             );
 
+        $stub->setLinks($this->_links);
         $stub->setMainSeed("http://localhost");
         $stub->run();
     }
