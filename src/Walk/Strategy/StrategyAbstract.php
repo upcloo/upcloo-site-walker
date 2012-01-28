@@ -70,4 +70,9 @@ abstract class StrategyAbstract
     {
         $this->_links = $links;
     }
+    
+    public function getLinks()
+    {
+        return $this->_links;
+    }
 }

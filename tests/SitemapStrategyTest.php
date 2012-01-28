@@ -1,9 +1,10 @@
 <?php 
-class SiteMapStrategyTest
+class SitemapStrategyTest
     extends \Zend\Test\PHPUnit\DatabaseTestCase
 {
     private $_connectionMock;
-    private $_links;
+    protected $_links;
+    protected $_stub;
     
     protected function getConnection()
     {
@@ -28,10 +29,7 @@ class SiteMapStrategyTest
         parent::setUp();
     
         $this->_links = new \Walk\Model\Link();
-    }
-    
-    public function testBaseSiteMap()
-    {
+        
         $stub = $this->getMock(
     		'\Walk\Strategy\Sitemap',
             array('_getSitemap', '_workOn')
@@ -54,8 +52,32 @@ class SiteMapStrategyTest
             );
         
         $stub->setLinks($this->_links);
-        $stub->setMainSeed("http://localhost");
-        $stub->run();
+        
+        $this->_stub = $stub;
+        $this->_stub->setMainSeed("http://localhost");
+    }
+    
+    public function testBaseSiteMap()
+    {
+        $this->_stub->run();
+        
+        $links = $this->_stub->getLinks();
+        $links = $links->fetchAll(null, array('link_id'));
+        
+        $this->assertEquals(2, count($links));
+
+        $this->assertEquals("http://your-domain.ltd/index.html", $links[0]->link);
+        $this->assertEquals("http://your-domain.ltd/second-page.html", $links[1]->link);
+        
+        $this->_stub->run();
+        
+        $links = $this->_stub->getLinks();
+        $links = $links->fetchAll(null, array('link_id'));
+        
+        $this->assertEquals(2, count($links));
+        
+        $this->assertEquals("http://your-domain.ltd/index.html", $links[0]->link);
+        $this->assertEquals("http://your-domain.ltd/second-page.html", $links[1]->link);
     }
     
     /**

@@ -13,27 +13,28 @@ class Sitemap extends StrategyAbstract
             $url = $this->_url;
         }
         
-        if (!$this->_links->exists($url)) {
-            \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Working on: {$url}");
-            $xml = $this->_getSitemap($url);
-            
-            $doc = new \DOMDocument();
-            $doc->loadXML($xml);
-            
-            if ($this->_isSitemap($doc)) {
-                $this->_fetchSitemap($doc);
-            } else if ($this->_isSitemapIndex($doc)) {
-                $this->_fetchSitemapIndex($doc);
-            } else {
-                throw new \Walk\Strategy\SitemapException("Not a valid Sitemap at {$url}");
-            }
-            
-            $this->_links->store($url);
+        \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Working on: {$url}");
+        $xml = $this->_getSitemap($url);
+
+        $doc = new \DOMDocument();
+        $doc->loadXML($xml);
+        
+        if ($this->_isSitemap($doc)) {
+            $this->_fetchSitemap($doc);
+        } else if ($this->_isSitemapIndex($doc)) {
+            $this->_fetchSitemapIndex($doc);
         } else {
-            \phly\PubSub::publish(\Walk\Setting::CONSOLE_TOPIC, "Skip: {$url} [parsed previously]");
+            throw new \Walk\Strategy\SitemapException("Not a valid Sitemap at {$url}");
         }
         
     }
+    /**
+     * Fetch sitemap index
+     * 
+     * No store on link execution (no useful page)
+     * 
+     * @param \DOMDocument $document
+     */
     
     protected function _fetchSitemapIndex(\DOMDocument $document)
     {
@@ -45,13 +46,27 @@ class Sitemap extends StrategyAbstract
         }
     }
     
+    /**
+     * Fetch the actual sitemap and work on URLs
+     * 
+     * Store links parsed after the work.
+     * 
+     * @param \DOMDocument $document
+     */
     protected function _fetchSitemap(\DOMDocument $document)
     {
         $locations = $document->getElementsByTagName("loc");
         foreach ($locations as $location) {
             $url = $location->nodeValue;
         
-            $this->_workOn($url);
+            if (!$this->_links->exists($url)) {
+                $this->_workOn($url);
+                
+                //Store this link as page...
+                $this->_links->store($url);
+            } else {
+                //URL already exists into the database...
+            }
         }
     }
     

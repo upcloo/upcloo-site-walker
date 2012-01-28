@@ -13,6 +13,6 @@ class Link extends \Zend\Db\Table\AbstractTable
     
     public function store($link) 
     {
-        parent::insert(array('link' => $link, 'hash' => sha1($link)));
+        $this->insert(array('link' => $link, 'hash' => sha1($link)));
     }
 }
